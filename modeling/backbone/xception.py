@@ -279,6 +279,7 @@ class AlignedXception(nn.Module):
 					model_dict[k] = v
 		state_dict.update(model_dict)
 		self.load_state_dict(state_dict)
+		self.conv1 = nn.Conv2d(2, 32, kernel_size = 3, stride = 2, padding = 1, bias = False)
 
 
 if __name__ == "__main__":

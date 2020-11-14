@@ -62,7 +62,7 @@ class ResNet(nn.Module):
 			raise NotImplementedError
 
 		# Modules
-		self.conv1 = nn.Conv2d(2, 64, kernel_size = 7, stride = 2, padding = 3,
+		self.conv1 = nn.Conv2d(3, 64, kernel_size = 7, stride = 2, padding = 3,
 		                       bias = False)
 		self.bn1 = BatchNorm(64)
 		self.relu = nn.ReLU(inplace = True)
@@ -146,18 +146,14 @@ class ResNet(nn.Module):
 	def _load_pretrained_model(self):
 		# FIXME only support 2 channels now
 		pretrain_dict = model_zoo.load_url('https://download.pytorch.org/models/resnet101-5d3b4d8f.pth')
-		model = torchvision.models.resnet101(pretrained = True)
-		model.conv1 = nn.Conv2d(2, 64, kernel_size = 7, stride = 2, padding = 3, bias = False)
 		model_dict = {}
-		model_dict['conv1.weight'] = model.conv1.weight
 		state_dict = self.state_dict()
 		for k, v in pretrain_dict.items():
-			if k == 'conv1.weight':
-				continue
 			if k in state_dict:
 				model_dict[k] = v
 		state_dict.update(model_dict)
 		self.load_state_dict(state_dict)
+		self.conv1 = nn.Conv2d(2, 64, kernel_size=7, stride=2, padding=3, bias=False)
 
 
 def ResNet101(output_stride, BatchNorm, pretrained = True):
